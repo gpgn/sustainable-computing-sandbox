@@ -25,14 +25,14 @@ brew install just  # on macOS
 To deploy the entire stack:
 
 ```sh
-just install requirements   # will download and install all necessary requirements
-just deploy all             # will deploy infra, and all other components
+just install requirements   # download and install all necessary requirements
+just deploy all             # deploy infra, and all other components
 ```
 
 To deploy specific components:
 
 ```sh
-just deploy infra  # will only spin up a local cluster
+just deploy infra  # spin up a local cluster, without deploying other components
 just deploy [energy-monitoring|carbon-monitoring|machine-learning|visualization]
 ```
 
@@ -41,7 +41,7 @@ just deploy [energy-monitoring|carbon-monitoring|machine-learning|visualization]
 To run a workload, for example to test energy consumption or carbon emission monitoring:
 
 ```sh
-just run [machine-learning]  # will run all workloads defined in machine-learning
+just run [machine-learning]  # run all workloads defined in machine-learning
 ```
 
 If deployed, visualizations can be found at:
@@ -52,6 +52,6 @@ If deployed, visualizations can be found at:
 To clean up:
 
 ```sh
-just teardown infra  # will remove the entire cluster, including applications 
+just teardown infra  # remove the entire cluster, including other components 
 just teardown [energy-monitoring|carbon-monitoring|machine-learning|visualization]
 ```
