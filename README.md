@@ -1,6 +1,6 @@
 # Sustainable computing sandbox
 
-Experimental environment to develop on energy- and carbon-aware cloud-native software. 
+🌱 Experimental environment to develop on energy- and carbon-aware cloud-native software. 
 
 ## Components
 
@@ -25,7 +25,7 @@ brew install just  # on macOS
 To deploy the entire stack:
 
 ```sh
-just install requirements  # will download and install all necessary requirements
+just install requirements   # will download and install all necessary requirements
 just deploy all             # will deploy infra, and all other components
 ```
 
