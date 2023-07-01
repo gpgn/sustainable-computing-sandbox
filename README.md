@@ -36,7 +36,7 @@ just deploy infra  # spin up a local cluster, without deploying other components
 just deploy [energy-monitoring|carbon-monitoring|machine-learning|visualization]
 ```
 
-## Usasge
+## Usage
 
 To run a workload, for example to test energy consumption or carbon emission monitoring:
 
