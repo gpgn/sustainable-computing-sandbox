@@ -2,7 +2,7 @@
 
 🌱 Experimental environment to develop on energy- and carbon-aware cloud-native software. 
 
-## Components
+## 📦 Components
 
 - Local cloud infrastructure
 - Energy consumption monitoring stack
@@ -11,7 +11,7 @@
 - Visualization stack
 - Execution management tool
 
-## Requirements
+## 📋 Requirements
 
 This project uses the [just](https://github.com/casey/just) command runner for ergonomic development. To install:
 
@@ -19,7 +19,7 @@ This project uses the [just](https://github.com/casey/just) command runner for e
 cargo install just
 ```
 
-## Installation
+## 🛠️ Installation
 
 To deploy the entire stack:
 
@@ -35,7 +35,7 @@ just deploy infra  # spin up a local cluster, without deploying other components
 just deploy [energy-monitoring|carbon-monitoring|machine-learning|visualization]
 ```
 
-## Usage
+## ⚡ Usage
 
 To run a workload, for example to test energy consumption or carbon emission monitoring:
 
