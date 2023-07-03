@@ -1,4 +1,4 @@
-# Sustainable computing sandbox
+# Sustainable Computing Sandbox
 
 🌱 Experimental environment to develop on energy- and carbon-aware cloud-native software. 
 
@@ -17,7 +17,6 @@ This project uses the [just](https://github.com/casey/just) command runner for e
 
 ```sh
 cargo install just
-brew install just  # on macOS
 ```
 
 ## Installation
@@ -47,7 +46,7 @@ just run [machine-learning]  # run all workloads defined in machine-learning
 If deployed, visualizations can be found at:
 - [Grafana dashboard](#)
 
-## Teardown
+## 🧹 Teardown
 
 To clean up:
 
