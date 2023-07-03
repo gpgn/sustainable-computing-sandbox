@@ -13,7 +13,7 @@
 
 ## 📋 Requirements
 
-This project uses the [just](https://github.com/casey/just) command runner for ergonomic development. To install:
+This project uses the [just](https://github.com/casey/just) command runner for ergonomic development. To install with [cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html):
 
 ```sh
 cargo install just
@@ -44,7 +44,7 @@ just run [machine-learning]  # run all workloads defined in machine-learning
 ```
 
 If deployed, visualizations can be found at:
-- [Grafana dashboard](#)
+- [Kepler Grafana dashboard](http://localhost:3000/d/NhnADUW4z/kepler-exporter-dashboard)
 
 ## 🧹 Teardown
 
