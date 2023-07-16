@@ -50,8 +50,14 @@ To run a workload, for example to test energy consumption or carbon emission mon
 just run [machine-learning]  # run all workloads defined in machine-learning
 ```
 
-If deployed, visualizations can be found at:
-- [Kepler Grafana dashboard](http://localhost:3000/d/NhnADUW4z/kepler-exporter-dashboard)
+### 🖥️ Dashboards
+
+If deployed, visualizations can be accessed with:
+
+```sh
+just view  # opens all dashboards
+just view [kepler|flyte]
+```
 
 ## 🧹 Teardown
 

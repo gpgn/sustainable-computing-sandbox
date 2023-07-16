@@ -7,6 +7,7 @@ default:
 install_targets := "requirements"
 deploy_targets := "all infra energy-monitoring carbon-monitoring machine-learning visualization"
 run_targets := "machine-learning"
+view_targets := "all kepler flyte"
 
 
 install $target:
@@ -42,4 +43,12 @@ teardown $target="all":
         ./scripts/teardown.sh --target $target; \
     else \
         echo "⚠️ Only supported: teardown [$deploy_targets]"; \
+    fi
+
+view $target="all":
+    @if echo $view_targets | tr ' ' '\n' | grep -q $target; then \
+        echo "📦 Opening $target dashboard ..."; \
+        ./scripts/view.sh --target $target; \
+    else \
+        echo "⚠️ Only supported: view [$view_targets]"; \
     fi
