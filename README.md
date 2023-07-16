@@ -21,11 +21,20 @@ cargo install just
 
 ## 🛠️ Installation
 
-To deploy the entire stack:
+Download and install all necessary requirements:
 
 ```sh
-just install requirements   # download and install all necessary requirements
-just deploy all             # deploy infra, and all other components
+just install requirements
+```
+
+## ⚡ Usage
+
+To start the cluster and deploy all components:
+
+> Note: Deployment might fail if a VPN is active.
+
+```sh
+just init
 ```
 
 To deploy specific components:
@@ -34,8 +43,6 @@ To deploy specific components:
 just deploy infra  # spin up a local cluster, without deploying other components
 just deploy [energy-monitoring|carbon-monitoring|machine-learning|visualization]
 ```
-
-## ⚡ Usage
 
 To run a workload, for example to test energy consumption or carbon emission monitoring:
 
@@ -48,9 +55,14 @@ If deployed, visualizations can be found at:
 
 ## 🧹 Teardown
 
-To clean up:
+To remove everything:
 
 ```sh
-just teardown infra  # remove the entire cluster, including other components 
+just teardown  # remove the entire cluster, including all components 
+```
+
+To remove specific components:
+
+```sh
 just teardown [energy-monitoring|carbon-monitoring|machine-learning|visualization]
 ```

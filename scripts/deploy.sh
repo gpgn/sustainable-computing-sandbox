@@ -50,22 +50,14 @@ check_params
 
 # --- Deploy block
 
-deploy_all() {
-	deploy_infra
-	deploy_energy_monitoring
-	deploy_carbon_monitoring
-	deploy_machine_learning
-	deploy_visualization
-}
-
 create_cluster() {
 	if !(kind get clusters | grep -q $CLUSTER_NAME)
     then
-        echo "    ⚙️ Creating cluster kind-$CLUSTER_NAME ..."
+        echo "    ↪️ Creating cluster kind-$CLUSTER_NAME ..."
 		kind create cluster --name=$CLUSTER_NAME --config=./infra/k8s/local-cluster-config.yaml
 		kubectl cluster-info --context kind-$CLUSTER_NAME
 	else
-		echo "    ⚙️ Cluster kind-$CLUSTER_NAME already exists, skipping ..."
+		echo "    ↪️ Cluster kind-$CLUSTER_NAME already exists, skipping ..."
 	fi
 }
 
@@ -92,7 +84,7 @@ EOF
 deploy_prometheus() {
 	if !(kubectl get deploy prometheus-operator -n monitoring --no-headers --ignore-not-found | grep -q prometheus-operator)
     then
-        echo "    ⚙️ Deploying Prometheus operator ..."
+        echo "    ↪️ Deploying Prometheus operator ..."
 		git clone --depth 1 https://github.com/prometheus-operator/kube-prometheus ./infra/k8s/kube-prometheus
 		cd ./infra/k8s/kube-prometheus
 		# fetch kepler-exporter grafana dashboard and inject in prometheus grafana deployment
@@ -100,12 +92,14 @@ deploy_prometheus() {
 		yq -i e '.items += [load("./grafana-dashboards/kepler-exporter-configmap.yaml")]' ./manifests/grafana-dashboardDefinitions.yaml
 		yq -i e '.spec.template.spec.containers.0.volumeMounts += [ {"mountPath": "/grafana-dashboard-definitions/0/kepler-exporter", "name": "grafana-dashboard-kepler-exporter", "readOnly": false} ]' ./manifests/grafana-deployment.yaml
 		yq -i e '.spec.template.spec.volumes += [ {"configMap": {"name": "grafana-dashboard-kepler-exporter"}, "name": "grafana-dashboard-kepler-exporter"} ]' ./manifests/grafana-deployment.yaml
+		# set alertmanager replicas=1
+		yq -i e '.spec.replicas = 1' ./manifests/alertmanager-alertmanager.yaml
 		# apply prometheus manifests
 		kubectl apply --server-side -f manifests/setup
 		until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
 		kubectl apply -f manifests/
 	else
-		echo "    ⚙️ Prometheus operator already exists, skipping ..."
+		echo "    ↪️ Prometheus operator already exists, skipping ..."
 	fi
 	echo "    💡 Grafana deployment can be accessed with credentials admin:admin\n    Expose using: 'kubectl -n monitoring port-forward svc/grafana 3000'\n    And navigate to http://localhost:3000/d/NhnADUW4z/kepler-exporter-dashboard"
 }
@@ -113,18 +107,57 @@ deploy_prometheus() {
 deploy_grafana() {
 	if !(kubectl get deploy grafana -n grafana --no-headers --ignore-not-found | grep -q grafana)
     then
-        echo "    ⚙️ Deploying Grafana ..."
+        echo "    ↪️ Deploying Grafana ..."
 		helm repo add grafana https://grafana.github.io/helm-charts
 		helm repo update
 		helm -n grafana install grafana grafana/grafana --create-namespace -f ./infra/grafana/values.yaml
 		GRAFANA_POD=$(kubectl get pods --namespace grafana -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=grafana" -o jsonpath="{.items[0].metadata.name}")
 		GRAFANA_PASSWORD=$(kubectl get secret -n grafana grafana -o jsonpath="{.data.admin-password}" | base64 -d)
-		echo "    ⚙️ Grafana deployment can be accessed with credentials admin:$GRAFANA_PASSWORD\n    💡Expose using: 'kubectl -n grafana port-forward $GRAFANA_POD 3000'"
+		echo "    ↪️ Grafana deployment can be accessed with credentials admin:$GRAFANA_PASSWORD\n    💡Expose using: 'kubectl -n grafana port-forward $GRAFANA_POD 3000'"
 	else
 		GRAFANA_POD=$(kubectl get pods --namespace grafana -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=grafana" -o jsonpath="{.items[0].metadata.name}")
 		GRAFANA_PASSWORD=$(kubectl get secret -n grafana grafana -o jsonpath="{.data.admin-password}" | base64 -d)
-		echo "    ⚙️ Grafana deployment already exists with credentials admin:$GRAFANA_PASSWORD\n    💡Expose using: 'kubectl -n grafana port-forward $GRAFANA_POD 3000', skipping deployment ..."
+		echo "    ↪️ Grafana deployment already exists with credentials admin:$GRAFANA_PASSWORD\n    💡Expose using: 'kubectl -n grafana port-forward $GRAFANA_POD 3000', skipping deployment ..."
 	fi
+}
+
+deploy_kepler() {
+	echo "    ↪️ Deploying Kepler ..."
+	if [ ! -d ./infra/kepler ]
+	then
+		git clone --depth 1 git@github.com:sustainable-computing-io/kepler.git ./infra/kepler
+	else
+		echo "    ✅ ./infra/kepler already exists, skipping clone ..."
+	fi
+	cd ./infra/kepler
+	make build-manifest OPTS="CI_DEPLOY PROMETHEUS_DEPLOY"
+	kubectl apply -f _output/generated-manifest/deployment.yaml
+}
+
+deploy_flyte() {
+	echo "    ↪️ Deploying Flyte ..."
+	if [ ! -d ./infra/flyte ]; then
+		git clone --depth 1 git@github.com:flyteorg/flyte.git ./infra/flyte
+	else
+		echo "    ✅ ./infra/flyte already exists, skipping clone ..."
+	fi
+	if !(helm list -A | grep -q flyte); then
+		cd ./infra/flyte
+		helm repo add flyteorg https://flyteorg.github.io/flyte
+		helm repo update
+		helm upgrade -n flyte --create-namespace flyte-deps flyteorg/flyte-deps --install --set minio.image.tag=2023.7.11-debian-11-r1,webhook.enabled=false # webhook will be deployed in flyte-core below
+		helm upgrade -n flyte --create-namespace flyte-core flyteorg/flyte-core --install --set flyteconsole.ga.enabled=false,db.admin.database.host=postgres.flyte.svc.cluster.local,db.admin.database.port=5432
+	else
+		echo "    ✅ Flyte deployment already exists, skipping ..."
+	fi
+}
+
+deploy_all() {
+	deploy_infra
+	deploy_energy_monitoring
+	deploy_carbon_monitoring
+	deploy_machine_learning
+	deploy_visualization
 }
 
 deploy_infra() {
@@ -132,28 +165,22 @@ deploy_infra() {
 	deploy_prometheus
 }
 
-deploy_kepler() {
-	git clone --depth 1 git@github.com:sustainable-computing-io/kepler.git ./infra/kepler
-	cd ./infra/kepler
-	make build-manifest OPTS="CI_DEPLOY PROMETHEUS_DEPLOY"
-	kubectl apply -f _output/generated-manifest/deployment.yaml
-}
-
 deploy_energy_monitoring() {
-	echo "⚙️ Deploying energy monitoring stack ..."
+	echo "↪️ Deploying energy monitoring stack ..."
 	deploy_kepler
 }
 
 deploy_carbon_monitoring() {
-	echo "⚙️ Deploying carbon monitoring stack ..."
+	echo "↪️ Deploying carbon monitoring stack ..."
 }
 
 deploy_machine_learning() {
-	echo "⚙️ Deploying machine learning stack ..."
+	echo "↪️ Deploying machine learning stack ..."
+	deploy_flyte
 }
 
 deploy_visualization() {
-	echo "⚙️ Deploying visualization stack ..."
+	echo "↪️ Deploying visualization stack ..."
 }
 
 case $deploy_target in

@@ -1,4 +1,5 @@
-kube-prometheus
+infra/flyte
+infra/k8s/kube-prometheus
 kepler-exporter.json
 kepler
 bcc

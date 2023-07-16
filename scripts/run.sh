@@ -50,7 +50,7 @@ check_params
 # --- Run block
 
 run_machine_learning() {
-	echo "⚡ Running machine learning workload ..."
+	echo "    ⚡ Running machine learning workload ..."
 }
 
 case $run_target in

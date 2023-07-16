@@ -17,6 +17,9 @@ install $target:
         echo "⚠️ Only supported: install [$install_targets]"; \
     fi
 
+init:
+    just deploy all
+
 deploy $target:
     @if echo $deploy_targets | tr ' ' '\n' | grep -q $target; then \
         echo "📦 Deploying $target ..."; \
@@ -33,7 +36,7 @@ run $target:
         echo "⚠️ Only supported: run [$run_targets]"; \
     fi
 
-teardown $target:
+teardown $target="all":
     @if echo $deploy_targets | tr ' ' '\n' | grep -q $target; then \
         echo "📦 Tearing down $target ..."; \
         ./scripts/teardown.sh --target $target; \

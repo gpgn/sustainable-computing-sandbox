@@ -76,6 +76,15 @@ delete_grafana() {
 	helm -n grafana uninstall grafana
 }
 
+teardown_kepler() {
+	helm -n kepler uninstall kepler
+}
+
+teardown_flyte() {
+	helm -n flyte uninstall flyte-core
+	helm -n flyte uninstall flyte-deps
+}
+
 teardown_infra() {
 	delete_cluster
 	rm -rf ./infra/k8s/kube-prometheus
@@ -83,20 +92,21 @@ teardown_infra() {
 }
 
 teardown_energy_monitoring() {
-	echo "🧹 Tearing down energy monitoring stack ..."
-	helm -n kepler uninstall kepler
+	echo "    ↪️ Tearing down energy monitoring stack ..."
+	teardown_kepler
 }
 
 teardown_carbon_monitoring() {
-	echo "🧹 Tearing down carbon monitoring stack ..."
+	echo "    ↪️ Tearing down carbon monitoring stack ..."
 }
 
 teardown_machine_learning() {
-	echo "🧹 Tearing down machine learning stack ..."
+	echo "    ↪️ Tearing down machine learning stack ..."
+	teardown_flyte 
 }
 
 teardown_visualization() {
-	echo "🧹 Tearing down visualization stack ..."
+	echo "    ↪️ Tearing down visualization stack ..."
 	delete_grafana
 }
 
