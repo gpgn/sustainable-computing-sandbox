@@ -19,6 +19,17 @@ install $target:
     fi
 
 init:
+    @if command -v mullvad >/dev/null 2>&1; then \
+        if ! mullvad status | grep -q Disconnected; then \
+            printf '⚠️ Mullvad VPN active. Are you sure you want to continue? This may impact Flyte deployment on KinD (y/n) '; \
+            read answer; \
+            if [ "$answer" != "${answer#[Yy]}" ] ;then \
+                just deploy all; \
+            else \
+                exit 0; \
+            fi; \
+        fi; \
+    fi; \
     just deploy all
 
 deploy $target:
