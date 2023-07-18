@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 VIEW_TARGETS="all kepler flyte"
 
@@ -64,6 +64,7 @@ view_flyte() {
 view_all() {
 	view_kepler
 	view_flyte
+	wait < <(jobs -p)
 }
 
 case $view_target in
