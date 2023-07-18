@@ -62,7 +62,7 @@ teardown $target="all":
 
 view $target="all":
     @if echo $view_targets | tr ' ' '\n' | grep -q $target; then \
-        echo "📦 Opening $target dashboard ..."; \
+        echo "📦 Opening $target dashboard(s) ..."; \
         ./scripts/view.sh --target $target; \
     else \
         echo "⚠️ Only supported: view [$view_targets]"; \
