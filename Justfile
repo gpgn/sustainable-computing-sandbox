@@ -32,6 +32,7 @@ init:
     fi; \
     just deploy all
     @bash -c "echo -e '\x1b[32m✓\x1b[0m Full stack deployed, waiting for all Pods to be up and running ...'"
+    kubectl -n flyte get cm flyte-console-config -o yaml | yq e '.data += {"ADMIN_API_URL": "http://localhost:8089"}' | kubectl replace -f -
     kubectl wait pods -n flyte -l app.kubernetes.io/instance=flyte-core --for condition=Ready --timeout=600s
     kubectl wait pods -n monitoring -l app.kubernetes.io/part-of=kube-prometheus --for condition=Ready --timeout=600s
     just view

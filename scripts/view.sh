@@ -58,6 +58,7 @@ view_kepler() {
 view_flyte() {
 	echo "    🖥️ Forwarding & opening Flyte console ..."
 	kubectl -n flyte port-forward svc/flyteconsole 8080:80 &
+	kubectl -n flyte port-forward svc/flyteadmin 8089:80 &
 	xdg-open http://localhost:8080/console
 }
 
