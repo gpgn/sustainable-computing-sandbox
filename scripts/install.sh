@@ -59,7 +59,7 @@ install_kind() {
         chmod +x ./kind
         sudo mv ./kind /usr/local/bin/kind
     else
-        echo "    ✅ kind >= $MIN_KIND_VERSION already installed, skipping ..."
+        echo "    \x1b[32m✓\x1b[0m kind >= $MIN_KIND_VERSION already installed, skipping ..."
     fi
 }
 
@@ -73,7 +73,7 @@ install_kubectl() {
         sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
         kubectl version --client
     else
-        echo "    ✅ kubectl >= $MIN_KUBECTL_VERSION already installed, skipping ..."
+        echo "    \x1b[32m✓\x1b[0m kubectl >= $MIN_KUBECTL_VERSION already installed, skipping ..."
     fi
 }
 
@@ -87,7 +87,7 @@ install_helm() {
         ./get_helm.sh
         rm ./get_helm.sh
     else
-        echo "    ✅ helm >= $MIN_HELM_VERSION already installed, skipping ..."
+        echo "    \x1b[32m✓\x1b[0m helm >= $MIN_HELM_VERSION already installed, skipping ..."
     fi
 }
 
@@ -98,7 +98,7 @@ install_yq() {
         sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
         sudo chmod +x /usr/bin/yq
     else
-        echo "    ✅ yq already installed, skipping ..."
+        echo "    \x1b[32m✓\x1b[0m yq already installed, skipping ..."
     fi
 }
 
@@ -111,7 +111,7 @@ install_go() {
         sudo tar -C /usr/local -xzf go$GO_VERSION.linux-amd64.tar.gz
         export PATH=$PATH:/usr/local/go/bin
     else
-        echo "    ✅ Golang already installed, skipping ..."
+        echo "    \x1b[32m✓\x1b[0m Golang already installed, skipping ..."
     fi
 }
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DEPLOY_TARGETS="all infra energy-monitoring carbon-monitoring machine-learning visualization"
 CLUSTER_NAME="cluster-sustainable-computing-sandbox"
@@ -127,7 +127,7 @@ deploy_kepler() {
 	then
 		git clone --depth 1 git@github.com:sustainable-computing-io/kepler.git ./infra/kepler
 	else
-		echo "    ✅ ./infra/kepler already exists, skipping clone ..."
+		echo "    \x1b[32m✓\x1b[0m ./infra/kepler already exists, skipping clone ..."
 	fi
 	cd ./infra/kepler
 	make build-manifest OPTS="CI_DEPLOY PROMETHEUS_DEPLOY"
@@ -139,7 +139,7 @@ deploy_flyte() {
 	if [ ! -d ./infra/flyte ]; then
 		git clone --depth 1 git@github.com:flyteorg/flyte.git ./infra/flyte
 	else
-		echo "    ✅ ./infra/flyte already exists, skipping clone ..."
+		echo "    \x1b[32m✓\x1b[0m ./infra/flyte already exists, skipping clone ..."
 	fi
 	if !(helm list -A | grep -q flyte); then
 		cd ./infra/flyte
@@ -148,7 +148,7 @@ deploy_flyte() {
 		helm upgrade -n flyte --create-namespace flyte-deps flyteorg/flyte-deps --install --set minio.image.tag=2023.7.11-debian-11-r1,webhook.enabled=false # webhook will be deployed in flyte-core below
 		helm upgrade -n flyte --create-namespace flyte-core flyteorg/flyte-core --install --set flyteconsole.ga.enabled=false,db.admin.database.host=postgres.flyte.svc.cluster.local,db.admin.database.port=5432
 	else
-		echo "    ✅ Flyte deployment already exists, skipping ..."
+		echo "    \x1b[32m✓\x1b[0m Flyte deployment already exists, skipping ..."
 	fi
 }
 

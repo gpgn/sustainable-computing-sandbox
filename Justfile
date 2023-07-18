@@ -31,6 +31,7 @@ init:
         fi; \
     fi; \
     just deploy all
+    @bash -c "echo -e '\x1b[32m✓\x1b[0m Init completed. Allow a few moments for the deployments to come up.\nThen open the dashboards by running: just view'"
 
 deploy $target:
     @if echo $deploy_targets | tr ' ' '\n' | grep -q $target; then \
