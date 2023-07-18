@@ -31,7 +31,10 @@ init:
         fi; \
     fi; \
     just deploy all
-    @bash -c "echo -e '\x1b[32m✓\x1b[0m Init completed. Allow a few moments for the deployments to come up.\nThen open the dashboards by running: just view'"
+    @bash -c "echo -e '\x1b[32m✓\x1b[0m Full stack deployed, waiting for all Pods to be up and running ...'"
+    kubectl wait pods -n flyte -l app.kubernetes.io/instance=flyte-core --for condition=Ready --timeout=600s
+    kubectl wait pods -n monitoring -l app.kubernetes.io/part-of=kube-prometheus --for condition=Ready --timeout=600s
+    just view
 
 deploy $target:
     @if echo $deploy_targets | tr ' ' '\n' | grep -q $target; then \
